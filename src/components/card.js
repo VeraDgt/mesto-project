@@ -1,7 +1,95 @@
 import { openPopup } from './modal.js';
-import { popupImage, cardsContainer, cardTemplate, popupImageImg, popupImageCaption, popupDeleteCard, formDeleteCard } from './constants.js';
+import { popupImage, cardsContainer, cardTemplate, popupImageImg, popupImageCaption, popupDeleteCard, formDeleteCard } from '../utils/constants.js';
 import { setHeart, removeHeart, deleteCard } from './api.js';
-import { personId, handleSubmit } from '../index.js';
+import { personId, handleSubmit } from '../pages/index.js';
+
+//---ООП--->
+export default class Card {
+  constructor(data, selector) {
+    this._userId = data.userId;
+    this._link = data.link;
+    this._name = data.name;
+    this._cardId = data.cardId;
+    this._ownerId = data.ownerId; 
+    this._isLiked = false,
+    this._selector = selector;
+    this._like = function () {
+      likes.forEach((like) => {
+        if (like._id === ownerId) {
+          heartIcon.classList.add('card__heart-icon_checked');
+        }
+      });
+    }
+    this._likes = ({likes} ) => likes.length;
+  }
+
+    _handleClick() {
+      this._element.querySelector('.card__heart-icon').classList.toggle('card__heart-icon_checked');
+  }
+
+  _handleOpenPopup() {
+    popupImage.src = this._link;
+    popupElement.classList.add('popup_opened');
+  } 
+
+  _handleClosePopup() {
+    popupImage.src = '';
+    popupElement.classList.remove('popup_opened');
+  } 
+
+    _setEventListeners() {
+      this._element.querySelector('.card__heart-icon').addEventListener('clisk', () => {
+        this._handleClick();
+      });
+      this._element.addEventListener('click', () => {
+        this._handleOpenPopup()
+      });
+      popupCloseButton.addEventListener('click', () => {
+        this._handleClosePopup()
+      });
+    }
+  
+  _getElement() {
+    const cardElement = document
+    .querySelector(this._selector)
+    .querySelector('#card')
+    .content
+    .querySelector('.card').cloneNode(true);
+
+    return cardElement;
+  }
+
+    _countLikes() {
+    const heartIcon = newCard.querySelector('.card__heart-icon');
+    _likes.forEach((_like) => {
+      if (_like._id === _ownerId) {
+        heartIcon.classList.add('card__heart-icon_checked');
+      }
+    })
+  }
+
+  generate() {
+    this._element = this._getElement();
+    this._setEventListeners();
+
+    this._element.querySelector('.card__image').style.src = this._link;
+    this._element.querySelector('.card__title').textContent = this._name;
+    // this._element.querySelector('.card__heart-icon') = this._likes;
+    // this._element.querySelector('.card__hearts-number') = this._countLikes();
+    // this._element.querySelector('.card__delete-button') = '';
+
+    return this._element;
+  }
+
+}
+
+// items.reverse().forEach((item) => {
+//   const card = new Card(item, '.card');
+//   const cardElement = card.generate();
+//   document.querySelector('.cards__container').append(cardElement);
+// }); 
+
+//<---ООП---
 
 // function removeCard(card, cardId) {
 //   deleteCard(cardId)
@@ -56,6 +144,7 @@ function toggleHeart(heartIcon, heartsCount, cardId) {
     .catch(err => console.log(err));
   }
 }
+
 
 function createCard(link, name, cardId, ownerId, likes) {
   const newCard = cardTemplate.querySelector('.card').cloneNode(true);

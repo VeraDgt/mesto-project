@@ -1,4 +1,4 @@
-import { buttonsClosePopups } from './constants.js'
+import { buttonsClosePopups } from '../utils/constants.js'
 
 function openPopup(popup) {
   popup.classList.add('popup_opened');

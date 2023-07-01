@@ -1,14 +1,23 @@
-import './pages/index.css';
-import { enableValidation } from './components/validate.js';
-import { openPopup, closePopup,clickOnOverlayHandler } from './components/modal.js';
-import { renderCards } from './components/card.js';
-import { profileEditButton, profileName, profileDescription, popupEditProfile, nameInput, jobInput, popupAddCard, avatarEditButton, popupEditAvatar, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from './components/constants.js';
-import { getUserData, getInitialCards, updateUserData, updateCard, updateAvatar } from './components/api.js';
-import { renderLoading } from './components/utils.js';
+import './index.css';
+import { enableValidation } from '../components/validate.js';
+import { openPopup, closePopup,clickOnOverlayHandler } from '../components/modal.js';
+import { renderCards } from '../components/card.js';
+import { profileEditButton, profileName, profileDescription, popupEditProfile, nameInput, jobInput, popupAddCard, avatarEditButton, popupEditAvatar, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from '../utils/constants.js';
+import Api from '../components/api.js';
+import { renderLoading } from '../utils/utils.js';
+import FormPopup from '../components/Form.js';
+
+const api = new Api({
+  baseUrl: 'https://nomoreparties.co/v1/plus-cohort-25', 
+  headers: {
+    authorization: '93cf6edd-b0e6-426e-82f8-64302cc26990',
+    'Content-Type': 'application/json'
+  }
+})
 
 let personId = "";
 
-Promise.all([getUserData(), getInitialCards()])
+Promise.all([api.getUserData(), api.getInitialCards()])
 .then(([userData, initialCards]) => {
   profileAvatar.src = userData.avatar;
   profileName.textContent = userData.name;

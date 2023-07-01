@@ -1,4 +1,4 @@
-import { request } from './utils.js'
+import { request } from '../utils/utils.js'
 
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort-25', 
@@ -75,3 +75,86 @@ const updateAvatar = (newAvatar) => {
 
 
 export { getUserData, getInitialCards, updateUserData, updateCard, setHeart, removeHeart, deleteCard, updateAvatar }
+//---OOP--->
+export default class Api {
+  constructor(config) {
+    this._baseUrl = config.baseUrl;
+    this._headers = config.headers;
+  }
+
+  _checkResponse(res) {
+    if (res.ok) {
+      return res.json();
+    } 
+    return Promise.reject(`Что-то пошло не так: ${res.status}`);
+  }
+
+  _request(url, options) {
+    return fetch(url, options).then(this._checkResponse);
+  }
+
+  getUserData () {
+    return this._request(`${this._baseUrl}/users/me`, {
+      headers: this._headers
+    });
+  }
+
+  getInitialCards () {
+    return this._request(`${this._baseUrl}/cards`, {
+      headers: this._headers
+    });
+  }
+
+  updateUserData (data) {
+    return request(`${this._baseUrl}/users/me`, {
+      headers: this._headers,
+      method: "PATCH",
+      body: JSON.stringify({
+        name: data.uName,
+        about: data.description
+      })
+    });
+  }
+
+  updateCard (data) {
+    return request(`${this._baseUrl}/cards`, {
+      headers: this._headers,
+      method: "POST",
+      body: JSON.stringify({
+        name: data.cardName,
+        link: data.cardlink
+      })
+    });
+  }
+
+  setHeart = (cardId) => {
+    return request(`${this._baseUrl}/cards/likes/${cardId}`, {
+      headers: this._headers,
+      method: "PUT",
+    });
+  }
+
+  removeHeart = (cardId) => {
+    return request(`${this._baseUrl}/cards/likes/${cardId}`, {
+      headers: this._headers,
+      method: "DELETE",
+    });
+  }
+
+  deleteCard = (cardId) => {
+    return request(`${this._baseUrl}/cards/${cardId}`, {
+      headers: this._headers,
+      method: "DELETE",
+    });
+  }
+
+  updateAvatar = (newAvatar) => {
+    return request(`${this._baseUrl}/users/me/avatar`, {
+      headers: this._headers,
+      method: "PATCH",
+      body: JSON.stringify({
+        avatar: newAvatar
+      })
+    });
+  }
+}
