@@ -27,8 +27,8 @@ export default class Card {
   }
 
   _setEventListeners() {
-    this._heart.addEventListener('click', () => {
-      if (this._heart.classList.contains('card__heart-icon_checked')) {
+    this._heartIcon.addEventListener('click', () => {
+      if (this._heartIcon.classList.contains('card__heart-icon_checked')) {
         this._removeHeart(this._cardId);
         } else {
         this._setHeart(this._cardId);
@@ -55,7 +55,7 @@ export default class Card {
     this._image.src = this._link;
     this._image.alt = `Вид на ${this._name}.`;
     this._element.querySelector('.card__title').textContent = this._name;
-    this._heart = this._element.querySelector('.card__heart-icon');
+    this._heartIcon = this._element.querySelector('.card__heart-icon');
     this._heartsCount = this._element.querySelector('.card__hearts-number');
     this._heartsCount.textContent = this._likes.length;
     this._trashIcon = this._element.querySelector('.card__delete-button');
@@ -67,8 +67,9 @@ export default class Card {
   }
 
   _hasHeartChecked() {
-    if (this._likes.some((owner) => {
-      return this._userId === owner._id;
+    if (
+      this._likes.some((data) => {
+      return this._userId === data._id;
     })) {
       this._heartIcon.classList.add('card__heart-icon_checked');
     }

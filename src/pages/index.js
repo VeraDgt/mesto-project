@@ -53,6 +53,7 @@ const createCard = (data) => {
         })
       })
     },
+
     setHeart: (cardId) => {
       api.setHeart(cardId)
       .then((data) => {
@@ -72,6 +73,7 @@ const createCard = (data) => {
       })
     }
   })
+  
   const cardElement = card.generate();
   return cardElement;
 }
