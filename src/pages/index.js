@@ -1,11 +1,12 @@
 import './index.css';
+
 import { enableValidation } from '../components/validate.js';
 import { openPopup, closePopup,clickOnOverlayHandler } from '../components/modal.js';
-import { renderCards } from '../components/card.js';
+import Card from '../components/Card.js';
 import { profileEditButton, profileName, profileDescription, popupEditProfile, nameInput, jobInput, popupAddCard, avatarEditButton, popupEditAvatar, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from '../utils/constants.js';
-import Api from '../components/api.js';
-import { renderLoading } from '../utils/utils.js';
-import FormPopup from '../components/Form.js';
+import Api from '../components/Api.js';
+import Section from '../components/Section.js';
+import FormPopup from '../components/PopupWithForm.js';
 
 const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort-25', 
@@ -15,21 +16,73 @@ const api = new Api({
   }
 })
 
-let personId = "";
+let userId = "";
 
 Promise.all([api.getUserData(), api.getInitialCards()])
 .then(([userData, initialCards]) => {
   profileAvatar.src = userData.avatar;
   profileName.textContent = userData.name;
   profileDescription.textContent = userData.about;
-  personId = userData._id;
-  renderCards(initialCards);
+  userId = userData._id;
+  cards.renderItems(initialCards);
 })
 .catch(err => console.log(err));
 
 popupList.forEach ((item) => {
   item.addEventListener('click', clickOnOverlayHandler);
 });
+
+const createCard = (data) => {
+  const card = new Card({
+    data: data,
+    selector: '#card',
+    userId: userId,
+    handleCardClick: (name, link) => {
+      popupWithImageItem.open(name, link);
+    },
+    confirmCardDelete: (cardId) => {
+      popupConfirmDelete.open();
+      popupConfirmDelete.submitCallback(() => {
+        api.deleteCard(cardId)
+        .then(() => {
+          popupConfirmDelete.close();
+          card.deleteCard();
+        })
+        .catch((err) => {
+          console.log(`Ошибка: ${err}`);
+        })
+      })
+    },
+    setHeart: (cardId) => {
+      api.setHeart(cardId)
+      .then((data) => {
+        card.toggleHeart(data);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+    },
+    removeHeart: (cardId) => {
+      api.removeHeart(cardId)
+      .then((data) => {
+        card.toggleHeart(data);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      })
+    }
+  })
+  const cardElement = card.generate();
+  return cardElement;
+}
+
+const cards = new Section({
+  renderer: (card) => {
+    cards.addItem(createCard(card));
+  }
+}, '.cards__container');
+
+
 
 formEditAvatar.addEventListener('submit', handleEditAvatarFormSubmit);
 
@@ -80,7 +133,7 @@ cardAddButton.addEventListener('click', function() {
 
 function handleAddCardFormSubmit(evt) {
   function makeRequest() {
-    return updateCard(newPlaceTitle.value, newPlaceImage.value)
+    return api.updateCard(newPlaceTitle.value, newPlaceImage.value)
     .then((newCard) => {
       renderCards([newCard]);
     });
@@ -112,4 +165,4 @@ enableValidation({
   errorClass: 'form__error_active'
 });
 
-export { personId, handleSubmit }
+export { userId, handleSubmit }

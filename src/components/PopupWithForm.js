@@ -1,6 +1,6 @@
 import Popup from "./Popup";
 
-export default class FormPopup extends Popup {
+export default class PopupWithForm extends Popup {
   constructor({ popupSelector, handleFormSubmit }) {
     super(popupSelector);
     this._handleFormSubmit = handleFormSubmit;
@@ -31,8 +31,8 @@ close() {
   this._form.reset();
 }
 
-renderLoading(isLoading, loadingText='Сохранение...') {
-    if (isLoading) {
+renderLoading(request, loadingText='Сохранение...') {
+    if (request) {
     this._submitButton.textContent = loadingText;
     } else {
     this._submitButton.textContent = this._submitButtonText;
