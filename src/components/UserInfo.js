@@ -6,14 +6,14 @@ export class UserInfo {
   }
   getUserInfo() {
     const dataUserInfo = {
-        profileNameInput: this._profileName.textcontent,
-        profileDescriptionInput: this._profileDescription.textcontent
+        profileNameInput: this._profileName.value,
+        profileDescriptionInput: this._profileDescription.value
     }
     return dataUserInfo;
   }
   setUserInfo(userData) {
-    profileName.textContent = userData.name;
-    profileDescription.textContent = userData.about;
+    this._profileName.textContent = userData.name;
+    this._profileDescription.textContent = userData.about;
     personId = userData._id;
   }
   editAvatar(userData) {
