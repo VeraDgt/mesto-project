@@ -2,7 +2,7 @@
   "name": "mesto-project",
   "version": "0.0.1",
   "description": "Проект интерактивной страницы, на которую можно добавлять фотографии, удалять их и ставить лайки.\r Выполнен на HTML + CSS +, адаптирован для отображения на 4 видах наиболее популярных устройств: десктоп с разрешением 1280 и 1024, планшет 768 и смартфон 320px.",
-  "main": "index.js",
+  "main": "pages/index.js",
   "scripts": {
     "build": "webpack --mode production",
     "dev": "webpack serve --mode development",

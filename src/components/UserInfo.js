@@ -19,4 +19,3 @@ export class UserInfo {
   editAvatar(userData) {
     this._profileAvatar.scr = userData.avatar
   }
-}
