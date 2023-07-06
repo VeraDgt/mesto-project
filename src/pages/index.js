@@ -187,6 +187,15 @@ function handleSubmit(request, evt, loadingText = "Сохранение...") {
   });
 };
 
+const editFormValidaton = new FormValidator(config, formEditProfile);
+editFormValidaton.enableValidation();
+
+const addFormValidaton = new FormValidator(config, cardAddForm);
+addFormValidaton.enableValidation();
+
+const changeAvatarValidation = new FormValidator(config, formEditAvatar);
+changeAvatarValidation.enableValidation();
+
 // function handleEditAvatarFormSubmit(evt) {
 //   function makeRequest() {
 //     return updateAvatar(newAvatar.value)
@@ -226,11 +235,3 @@ function handleSubmit(request, evt, loadingText = "Сохранение...") {
 //   };
 //   handleSubmit(makeRequest, evt);
 // };
-
-
-const editFormValidator = new FormValidator(config, formEditProfile);
-editFormValidator.enableValidation();
-
-const addFormValidator = new FormValidator(config, cardAddForm);
-addFormValidator.enableValidation();
-
