@@ -1,6 +1,6 @@
 import './index.css';
 
-import { enableValidation } from '../components/validate.js';
+import { FormValidator, config } from '../components/FormValidator';
 // import { openPopup, closePopup,clickOnOverlayHandler } from '../components/modal.js';
 import Card from '../components/Card.js';
 import { profileEditButton, profileName, profileDescription, popupEditProfile, nameInput, jobInput, popupAddCard, avatarEditButton, popupEditAvatar, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from '../utils/constants.js';
@@ -159,15 +159,14 @@ function handleEditProfileFormSubmit(evt) {
 
 
 
-enableValidation({
-  formSelector: '.form',
-  inputSelector: '.form__item',
-  submitButtonSelector: '.form__button',
-  inactiveButtonClass: 'form__button_disabled',
-  inputErrorClass: 'form__item_error',
-  errorClass: 'form__error_active'
-});
+
 
 export { userId
   // , handleSubmit
- }
+}
+
+const editFormValidator = new FormValidator(config, formEditProfile);
+editFormValidator.enableValidation();
+
+const addFormValidator = new FormValidator(config, cardAddForm);
+addFormValidator.enableValidation();
