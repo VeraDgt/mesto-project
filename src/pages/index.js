@@ -1,12 +1,13 @@
 import './index.css';
 
 import { FormValidator, config } from '../components/FormValidator';
-// import { openPopup, closePopup,clickOnOverlayHandler } from '../components/modal.js';
 import Card from '../components/Card.js';
-import { profileEditButton, profileName, profileDescription, popupEditProfile, nameInput, jobInput, popupAddCard, avatarEditButton, popupEditAvatar, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from '../utils/constants.js';
+import { profileEditButton, avatarEditButton, nameInput, jobInput, profileAvatar, formEditAvatar, cardAddForm, cardAddButton, formEditProfile } from '../utils/constants.js';
 import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import PopupWithImage from '../components/PopupWithImage.js';
+import PopupWithForm from '../components/PopupWithForm.js';
+import UserInfo from '../components/UserInfo.js';
 
 const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort-25', 
@@ -20,17 +21,11 @@ let userId = "";
 
 Promise.all([api.getUserData(), api.getInitialCards()])
 .then(([userData, initialCards]) => {
-  profileAvatar.src = userData.avatar;
-  profileName.textContent = userData.name;
-  profileDescription.textContent = userData.about;
   userId = userData._id;
+  dataUserInfo.setUserInfo(userData);
   cards.renderItems(initialCards);
 })
-.catch(err => console.log(err));
-
-// popupList.forEach ((item) => {
-//   item.addEventListener('click', clickOnOverlayHandler);
-// });
+.catch(err => console.log(`Ошибка: ${err}`));
 
 const createCard = (data) => {
   const card = new Card({
@@ -87,86 +82,155 @@ const cards = new Section({
 const popupWithImageItem = new PopupWithImage('#popup_image');
 popupWithImageItem.setEventListeners();
 
-formEditAvatar.addEventListener('submit', handleEditAvatarFormSubmit);
+// formEditAvatar.addEventListener('submit', handleEditAvatarFormSubmit);
 
-// avatarEditButton.addEventListener('click', function() {
-//   openPopup(popupEditAvatar);
-// });
+const dataUserInfo = new UserInfo({
+  profileAvatar: '.profile__avatar',
+  profileName: '.profile__name',
+  profileDescription: '.profile__description'
+});
 
-// profileEditButton.addEventListener('click', function() {
-//   nameInput.value = profileName.textContent;
-//   jobInput.value = profileDescription.textContent;
-//   openPopup(popupEditProfile);
-// });
+const popupEditProfile = new PopupWithForm({
+  popupSelector: '#popup_edit-profile',
+  handleFormSubmit: (userData) => {
+    popupEditProfile.renderLoading(true);
+    api.updateUserData(userData)
+    .then((userData) => {
+      dataUserInfo.setUserInfo(userData);
+      popupEditProfile.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      popupEditProfile.renderLoading(false);
+    })
+  }
+});
+popupEditProfile.setEventListeners();
 
-// function handleSubmit(request, evt, loadingText = "Сохранение...") {
-//   evt.preventDefault();
-//   const submitButton = evt.submitter;
-//   const initialText = submitButton.textContent;
-//   renderLoading(true, submitButton, initialText, loadingText);
-//   request()
-//   .then(() => {
-//   closePopup(evt.target.closest('.popup'));
-//   evt.target.reset();
-//   })
-//   .catch((err) => {
-//     console.error(`Ошибка: ${err}`);
-//   })
-//   .finally(() => {
-//     renderLoading(false, submitButton, initialText);
-//   });
-// };
+function setEditProfileData({ name, description }) {
+  nameInput.value = name;
+  jobInput.value = description;
+}
 
-function handleEditAvatarFormSubmit(evt) {
-  function makeRequest() {
-    return updateAvatar(newAvatar.value)
-    .then((res) => {
-    const newAvatarLink = res.avatar;
-    profileAvatar.style.backgroundImage = `url(${newAvatarLink})`;
-    });
-  };
-  handleSubmit(makeRequest, evt);
+profileEditButton.addEventListener('click', () => {
+  const userData = dataUserInfo.getUserInfo();
+  setEditProfileData({
+    name: userData.profileNameInput,
+    description: userData.profileDescriptionInput
+  });
+  popupEditProfile.open();
+});
+
+const popupEditAvatar = new PopupWithForm({
+  popupSelector: '#popup_edit-avatar',
+  handleFormSubmit: (data) => {
+    popupEditAvatar.renderLoading(true);
+    api.updateAvatar(data)
+    .then((data) => {
+      profileAvatar.src = data.avatar;
+      popupEditAvatar.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      profileAvatar.renderLoading(false);
+    })
+  }
+});
+popupEditAvatar.setEventListeners();
+
+avatarEditButton.addEventListener('click', () => {
+  popupEditAvatar.open();
+});
+
+const popupAddCard = new PopupWithForm({
+  popupSelector: '#popup_add-card',
+  handleFormSubmit: (data) => {
+    popupAddCard.renderLoading(true);
+    api.updateCard(data)
+    .then((data) => {
+      cards.addItem(createCard(data));
+      popupAddCard.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      popupAddCard.renderLoading(false);
+    })
+  }
+});
+popupAddCard.setEventListeners();
+
+cardAddButton.addEventListener('click', () => {
+  popupAddCard.open();
+})
+
+function handleSubmit(request, evt, loadingText = "Сохранение...") {
+  evt.preventDefault();
+  const submitButton = evt.submitter;
+  const initialText = submitButton.textContent;
+  renderLoading(true, submitButton, initialText, loadingText);
+  request()
+  .then(() => {
+  closePopup(evt.target.closest('.popup'));
+  evt.target.reset();
+  })
+  .catch((err) => {
+    console.error(`Ошибка: ${err}`);
+  })
+  .finally(() => {
+    renderLoading(false, submitButton, initialText);
+  });
 };
 
-cardAddForm.addEventListener('submit', handleAddCardFormSubmit);
+// function handleEditAvatarFormSubmit(evt) {
+//   function makeRequest() {
+//     return updateAvatar(newAvatar.value)
+//     .then((res) => {
+//     const newAvatarLink = res.avatar;
+//     profileAvatar.style.backgroundImage = `url(${newAvatarLink})`;
+//     });
+//   };
+//   handleSubmit(makeRequest, evt);
+// };
+
+// cardAddForm.addEventListener('submit', handleAddCardFormSubmit);
 
 // cardAddButton.addEventListener('click', function() {
 //   openPopup(popupAddCard);
 // });
 
-function handleAddCardFormSubmit(evt) {
-  function makeRequest() {
-    return api.updateCard(newPlaceTitle.value, newPlaceImage.value)
-    .then((newCard) => {
-      renderCards([newCard]);
-    });
-  };
-  handleSubmit(makeRequest, evt);
-};
+// function handleAddCardFormSubmit(evt) {
+//   function makeRequest() {
+//     return api.updateCard(newPlaceTitle.value, newPlaceImage.value)
+//     .then((newCard) => {
+//       renderCards([newCard]);
+//     });
+//   };
+//   handleSubmit(makeRequest, evt);
+// };
 
-formEditProfile.addEventListener('submit', handleEditProfileFormSubmit);
+// formEditProfile.addEventListener('submit', handleEditProfileFormSubmit);
 
-function handleEditProfileFormSubmit(evt) {
-  function makeRequest() {
-    return updateUserData(nameInput.value, jobInput.value)
-    .then((newData) => {
-      profileName.textContent = newData.name;
-      profileDescription.textContent = newData.about;
-    });
-  };
-  handleSubmit(makeRequest, evt);
-};
+// function handleEditProfileFormSubmit(evt) {
+//   function makeRequest() {
+//     return updateUserData(nameInput.value, jobInput.value)
+//     .then((newData) => {
+//       profileName.textContent = newData.name;
+//       profileDescription.textContent = newData.about;
+//     });
+//   };
+//   handleSubmit(makeRequest, evt);
+// };
 
-
-
-
-
-export { userId
-  // , handleSubmit
-}
 
 const editFormValidator = new FormValidator(config, formEditProfile);
 editFormValidator.enableValidation();
 
 const addFormValidator = new FormValidator(config, cardAddForm);
 addFormValidator.enableValidation();
+
