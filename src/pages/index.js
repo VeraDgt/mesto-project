@@ -1,12 +1,14 @@
 import './index.css';
 
-import { enableValidation } from '../components/validate.js';
+import FormValidator from '../components/FormValidator.js';
 // import { openPopup, closePopup,clickOnOverlayHandler } from '../components/modal.js';
 import Card from '../components/Card.js';
-import { profileEditButton, profileName, profileDescription, popupEditProfile, nameInput, jobInput, popupAddCard, avatarEditButton, popupEditAvatar, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from '../utils/constants.js';
+import { profileEditButton, profileName, profileDescription, nameInput, jobInput, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from '../utils/constants.js';
 import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import PopupWithImage from '../components/PopupWithImage.js';
+import PopupWithForm from '../components/PopupWithForm.js';
+import UserInfo from '../components/UserInfo.js';
 
 const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort-25', 
@@ -20,17 +22,11 @@ let userId = "";
 
 Promise.all([api.getUserData(), api.getInitialCards()])
 .then(([userData, initialCards]) => {
-  profileAvatar.src = userData.avatar;
-  profileName.textContent = userData.name;
-  profileDescription.textContent = userData.about;
   userId = userData._id;
+  dataUserInfo.setUserInfo(userData);
   cards.renderItems(initialCards);
 })
-.catch(err => console.log(err));
-
-// popupList.forEach ((item) => {
-//   item.addEventListener('click', clickOnOverlayHandler);
-// });
+.catch(err => console.log(`Ошибка: ${err}`));
 
 const createCard = (data) => {
   const card = new Card({
@@ -87,17 +83,52 @@ const cards = new Section({
 const popupWithImageItem = new PopupWithImage('#popup_image');
 popupWithImageItem.setEventListeners();
 
-formEditAvatar.addEventListener('submit', handleEditAvatarFormSubmit);
+// formEditAvatar.addEventListener('submit', handleEditAvatarFormSubmit);
+
+const dataUserInfo = new UserInfo({
+  profileAvatar: '.profile__avatar',
+  profileName: '.profile__name',
+  profileDescription: '.profile__description'
+});
+
+const popupEditProfile = new PopupWithForm({
+  popupSelector: '#popup_edit-profile',
+  handleFormSubmit: (userData) => {
+    popupEditProfile.renderLoading(true);
+    api.updateUserData(userData)
+    .then((userData) => {
+      userInfo.setUserInfo(userData);
+      popupEditProfile.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      popupEditProfile.renderLoading(false);
+    })
+  }
+});
+popupEditProfile.setEventListeners();
+
+function setEditProfileData({ name, description }) {
+  nameInput.value = name;
+  jobInput.value = description;
+}
+
+profileEditButton.addEventListener('click', () => {
+  const userData = dataUserInfo.getUserInfo();
+  setEditProfileData({
+    name: userData.name,
+    description: userData.description
+  });
+  popupEditProfile.open();
+});
 
 // avatarEditButton.addEventListener('click', function() {
 //   openPopup(popupEditAvatar);
 // });
 
-// profileEditButton.addEventListener('click', function() {
-//   nameInput.value = profileName.textContent;
-//   jobInput.value = profileDescription.textContent;
-//   openPopup(popupEditProfile);
-// });
+
 
 // function handleSubmit(request, evt, loadingText = "Сохранение...") {
 //   evt.preventDefault();
@@ -159,15 +190,15 @@ function handleEditProfileFormSubmit(evt) {
 
 
 
-enableValidation({
-  formSelector: '.form',
-  inputSelector: '.form__item',
-  submitButtonSelector: '.form__button',
-  inactiveButtonClass: 'form__button_disabled',
-  inputErrorClass: 'form__item_error',
-  errorClass: 'form__error_active'
-});
+// enableValidation({
+//   formSelector: '.form',
+//   inputSelector: '.form__item',
+//   submitButtonSelector: '.form__button',
+//   inactiveButtonClass: 'form__button_disabled',
+//   inputErrorClass: 'form__item_error',
+//   errorClass: 'form__error_active'
+// });
 
 export { userId
   // , handleSubmit
- }
+}
