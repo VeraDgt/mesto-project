@@ -1,9 +1,8 @@
 import './index.css';
 
 import FormValidator from '../components/FormValidator.js';
-// import { openPopup, closePopup,clickOnOverlayHandler } from '../components/modal.js';
 import Card from '../components/Card.js';
-import { profileEditButton, profileName, profileDescription, nameInput, jobInput, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from '../utils/constants.js';
+import { profileEditButton, avatarEditButton, nameInput, jobInput, profileAvatar, formEditAvatar, cardAddForm, cardAddButton, formEditProfile } from '../utils/constants.js';
 import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import PopupWithImage from '../components/PopupWithImage.js';
@@ -97,7 +96,7 @@ const popupEditProfile = new PopupWithForm({
     popupEditProfile.renderLoading(true);
     api.updateUserData(userData)
     .then((userData) => {
-      userInfo.setUserInfo(userData);
+      dataUserInfo.setUserInfo(userData);
       popupEditProfile.close();
     })
     .catch((err) => {
@@ -118,75 +117,115 @@ function setEditProfileData({ name, description }) {
 profileEditButton.addEventListener('click', () => {
   const userData = dataUserInfo.getUserInfo();
   setEditProfileData({
-    name: userData.name,
-    description: userData.description
+    name: userData.profileNameInput,
+    description: userData.profileDescriptionInput
   });
   popupEditProfile.open();
 });
 
-// avatarEditButton.addEventListener('click', function() {
-//   openPopup(popupEditAvatar);
-// });
+const popupEditAvatar = new PopupWithForm({
+  popupSelector: '#popup_edit-avatar',
+  handleFormSubmit: (data) => {
+    popupEditAvatar.renderLoading(true);
+    api.updateAvatar(data)
+    .then((data) => {
+      profileAvatar.src = data.avatar;
+      popupEditAvatar.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      profileAvatar.renderLoading(false);
+    })
+  }
+});
+popupEditAvatar.setEventListeners();
 
+avatarEditButton.addEventListener('click', () => {
+  popupEditAvatar.open();
+});
 
+const popupAddCard = new PopupWithForm({
+  popupSelector: '#popup_add-card',
+  handleFormSubmit: (data) => {
+    popupAddCard.renderLoading(true);
+    api.updateCard(data)
+    .then((data) => {
+      cards.addItem(createCard(data));
+      popupAddCard.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      popupAddCard.renderLoading(false);
+    })
+  }
+});
+popupAddCard.setEventListeners();
 
-// function handleSubmit(request, evt, loadingText = "Сохранение...") {
-//   evt.preventDefault();
-//   const submitButton = evt.submitter;
-//   const initialText = submitButton.textContent;
-//   renderLoading(true, submitButton, initialText, loadingText);
-//   request()
-//   .then(() => {
-//   closePopup(evt.target.closest('.popup'));
-//   evt.target.reset();
-//   })
-//   .catch((err) => {
-//     console.error(`Ошибка: ${err}`);
-//   })
-//   .finally(() => {
-//     renderLoading(false, submitButton, initialText);
-//   });
-// };
+cardAddButton.addEventListener('click', () => {
+  popupAddCard.open();
+})
 
-function handleEditAvatarFormSubmit(evt) {
-  function makeRequest() {
-    return updateAvatar(newAvatar.value)
-    .then((res) => {
-    const newAvatarLink = res.avatar;
-    profileAvatar.style.backgroundImage = `url(${newAvatarLink})`;
-    });
-  };
-  handleSubmit(makeRequest, evt);
+function handleSubmit(request, evt, loadingText = "Сохранение...") {
+  evt.preventDefault();
+  const submitButton = evt.submitter;
+  const initialText = submitButton.textContent;
+  renderLoading(true, submitButton, initialText, loadingText);
+  request()
+  .then(() => {
+  closePopup(evt.target.closest('.popup'));
+  evt.target.reset();
+  })
+  .catch((err) => {
+    console.error(`Ошибка: ${err}`);
+  })
+  .finally(() => {
+    renderLoading(false, submitButton, initialText);
+  });
 };
 
-cardAddForm.addEventListener('submit', handleAddCardFormSubmit);
+// function handleEditAvatarFormSubmit(evt) {
+//   function makeRequest() {
+//     return updateAvatar(newAvatar.value)
+//     .then((res) => {
+//     const newAvatarLink = res.avatar;
+//     profileAvatar.style.backgroundImage = `url(${newAvatarLink})`;
+//     });
+//   };
+//   handleSubmit(makeRequest, evt);
+// };
+
+// cardAddForm.addEventListener('submit', handleAddCardFormSubmit);
 
 // cardAddButton.addEventListener('click', function() {
 //   openPopup(popupAddCard);
 // });
 
-function handleAddCardFormSubmit(evt) {
-  function makeRequest() {
-    return api.updateCard(newPlaceTitle.value, newPlaceImage.value)
-    .then((newCard) => {
-      renderCards([newCard]);
-    });
-  };
-  handleSubmit(makeRequest, evt);
-};
+// function handleAddCardFormSubmit(evt) {
+//   function makeRequest() {
+//     return api.updateCard(newPlaceTitle.value, newPlaceImage.value)
+//     .then((newCard) => {
+//       renderCards([newCard]);
+//     });
+//   };
+//   handleSubmit(makeRequest, evt);
+// };
 
-formEditProfile.addEventListener('submit', handleEditProfileFormSubmit);
+// formEditProfile.addEventListener('submit', handleEditProfileFormSubmit);
 
-function handleEditProfileFormSubmit(evt) {
-  function makeRequest() {
-    return updateUserData(nameInput.value, jobInput.value)
-    .then((newData) => {
-      profileName.textContent = newData.name;
-      profileDescription.textContent = newData.about;
-    });
-  };
-  handleSubmit(makeRequest, evt);
-};
+// function handleEditProfileFormSubmit(evt) {
+//   function makeRequest() {
+//     return updateUserData(nameInput.value, jobInput.value)
+//     .then((newData) => {
+//       profileName.textContent = newData.name;
+//       profileDescription.textContent = newData.about;
+//     });
+//   };
+//   handleSubmit(makeRequest, evt);
+// };
 
 
 
@@ -199,6 +238,6 @@ function handleEditProfileFormSubmit(evt) {
 //   errorClass: 'form__error_active'
 // });
 
-export { userId
-  // , handleSubmit
-}
+// export { userId
+//   // , handleSubmit
+// }
