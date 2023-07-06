@@ -1,6 +1,6 @@
 import './index.css';
 
-import FormValidator from '../components/FormValidator.js';
+import { FormValidator, config } from '../components/FormValidator';
 import Card from '../components/Card.js';
 import { profileEditButton, avatarEditButton, nameInput, jobInput, profileAvatar, formEditAvatar, cardAddForm, cardAddButton, formEditProfile } from '../utils/constants.js';
 import Api from '../components/Api.js';
@@ -228,16 +228,9 @@ function handleSubmit(request, evt, loadingText = "Сохранение...") {
 // };
 
 
+const editFormValidator = new FormValidator(config, formEditProfile);
+editFormValidator.enableValidation();
 
-// enableValidation({
-//   formSelector: '.form',
-//   inputSelector: '.form__item',
-//   submitButtonSelector: '.form__button',
-//   inactiveButtonClass: 'form__button_disabled',
-//   inputErrorClass: 'form__item_error',
-//   errorClass: 'form__error_active'
-// });
+const addFormValidator = new FormValidator(config, cardAddForm);
+addFormValidator.enableValidation();
 
-// export { userId
-//   // , handleSubmit
-// }

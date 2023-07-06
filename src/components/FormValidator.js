@@ -1,22 +1,18 @@
-export default class FormValidator {
-  constructor(config) {
+export const config = {
+  formSelector: '.form',
+  inputSelector: '.form__item',
+  submitButtonSelector: '.form__button',
+  inactiveButtonClass: 'form__button_disabled',
+  inputErrorClass: 'form__item_error',
+  errorClass: 'form__error_active'
+};
+export class FormValidator {
+  constructor(config, formElement) {
     this.config = config;
-    this.formList = Array.from(document.querySelectorAll(config.formSelector));
+    this._formElement = formElement;
+    // this.formList = Array.from(document.querySelectorAll(config.formSelector));
   }
-  
-  enableValidation() {
-    this.formList.forEach((formElement) => {
-      formElement.addEventListener('submit', (evt) => {
-        evt.preventDefault();
-        const button = formElement.querySelector(this.config.submitButtonSelector);
-        const item = formElement.querySelector(this.config.inputSelector);
-        if (item) {
-          this.setSubmitButtonState(false, button);
-        }
-      });
-      this._setEventListeners(formElement);
-    });
-  }
+
   
   _setEventListeners(formElement) {
     const inputList = Array.from(formElement.querySelectorAll(this.config.inputSelector));
@@ -82,4 +78,7 @@ export default class FormValidator {
       submitButton.classList.add(this.config.inactiveButtonClass);
     }
   }
+  enableValidation() {
+    this._setEventListeners(this._formElement);
+  };
 }
