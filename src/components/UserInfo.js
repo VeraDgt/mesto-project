@@ -16,6 +16,6 @@ export default class UserInfo {
     this._profileDescription.textContent = userData.about;
   }
   editAvatar(userData) {
-    this._profileAvatar.scr = userData.avatar
+    this._profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
   }
 }

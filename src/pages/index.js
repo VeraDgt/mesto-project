@@ -130,18 +130,18 @@ profileEditButton.addEventListener('click', () => {
 
 const popupEditAvatar = new PopupWithForm({
   popupSelector: '#popup_edit-avatar',
-  handleFormSubmit: (data) => {
+  handleFormSubmit: (userData) => {
     popupEditAvatar.renderLoading(true);
-    api.updateAvatar(data)
-    .then((data) => {
-      profileAvatar.src = data.avatar;
+    api.updateAvatar(userData.avatar)
+    .then((userData) => {
+      dataUserInfo.editAvatar(userData);
       popupEditAvatar.close();
     })
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
     })
     .finally(() => {
-      profileAvatar.renderLoading(false);
+      popupEditAvatar.renderLoading(false);
     })
   }
 });
