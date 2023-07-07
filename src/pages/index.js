@@ -93,9 +93,15 @@ const popupEditProfile = new PopupWithForm({
   popupSelector: '#popup_edit-profile',
   handleFormSubmit: (userData) => {
     popupEditProfile.renderLoading(true);
-    api.updateUserData(userData)
+    api.updateUserData({ 
+      name: userData.name,
+      about: userData.description
+    })
     .then((userData) => {
-      dataUserInfo.setUserInfo(userData);
+      dataUserInfo.setUserInfo({ 
+          name: userData.name,
+          about: userData.about
+        });
       popupEditProfile.close();
     })
     .catch((err) => {
@@ -124,18 +130,18 @@ profileEditButton.addEventListener('click', () => {
 
 const popupEditAvatar = new PopupWithForm({
   popupSelector: '#popup_edit-avatar',
-  handleFormSubmit: (data) => {
+  handleFormSubmit: (userData) => {
     popupEditAvatar.renderLoading(true);
-    api.updateAvatar(data)
-    .then((data) => {
-      profileAvatar.src = data.avatar;
+    api.updateAvatar(userData.avatar)
+    .then((userData) => {
+      dataUserInfo.editAvatar(userData);
       popupEditAvatar.close();
     })
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
     })
     .finally(() => {
-      profileAvatar.renderLoading(false);
+      popupEditAvatar.renderLoading(false);
     })
   }
 });
@@ -149,7 +155,10 @@ const popupAddCard = new PopupWithForm({
   popupSelector: '#popup_add-card',
   handleFormSubmit: (data) => {
     popupAddCard.renderLoading(true);
-    api.updateCard(data)
+    api.updateCard({ 
+      name: data.name,
+      link: data.link
+    })
     .then((data) => {
       cards.addItem(createCard(data));
       popupAddCard.close();
