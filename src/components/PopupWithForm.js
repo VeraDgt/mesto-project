@@ -17,13 +17,11 @@ export default class PopupWithForm extends Popup {
       this._values[item.name] = item.value;
     })
     return this._values;
-    
   }
 
   _submitForm(evt) {
-    // evt.preventDefault();
-    // this._handleFormSubmit(this._getInputValues());
-    this.console.log('Oh la la!');
+    evt.preventDefault();
+    this._handleFormSubmit(this._getInputValues());
 }
 
 

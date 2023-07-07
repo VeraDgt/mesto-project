@@ -8,6 +8,7 @@ import Section from '../components/Section.js';
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
 import UserInfo from '../components/UserInfo.js';
+import PopupWithConfirmation from '../components/PopupWithConfirmation.js';
 
 const api = new Api({
   baseUrl: 'https://nomoreparties.co/v1/plus-cohort-25', 
@@ -81,8 +82,6 @@ const cards = new Section({
 
 const popupWithImageItem = new PopupWithImage('#popup_image');
 popupWithImageItem._setEventListeners();
-
-// formEditAvatar.addEventListener('submit', handleEditAvatarFormSubmit);
 
 const dataUserInfo = new UserInfo({
   profileAvatar: '.profile__avatar',
@@ -167,25 +166,12 @@ popupAddCard._setEventListeners();
 
 cardAddButton.addEventListener('click', () => {
   popupAddCard.open();
-})
+});
 
-function handleSubmit(request, evt, loadingText = "Сохранение...") {
-  evt.preventDefault();
-  const submitButton = evt.submitter;
-  const initialText = submitButton.textContent;
-  renderLoading(true, submitButton, initialText, loadingText);
-  request()
-  .then(() => {
-  closePopup(evt.target.closest('.popup'));
-  evt.target.reset();
-  })
-  .catch((err) => {
-    console.error(`Ошибка: ${err}`);
-  })
-  .finally(() => {
-    renderLoading(false, submitButton, initialText);
-  });
-};
+const popupConfirmDelete = new PopupWithConfirmation({
+  popupSelector: '#popup_delete-card'
+});
+popupConfirmDelete._setEventListeners();
 
 const editFormValidaton = new FormValidator(config, formEditProfile);
 editFormValidaton.enableValidation();
@@ -195,42 +181,3 @@ addFormValidaton.enableValidation();
 
 const changeAvatarValidation = new FormValidator(config, formEditAvatar);
 changeAvatarValidation.enableValidation();
-
-// function handleEditAvatarFormSubmit(evt) {
-//   function makeRequest() {
-//     return updateAvatar(newAvatar.value)
-//     .then((res) => {
-//     const newAvatarLink = res.avatar;
-//     profileAvatar.style.backgroundImage = `url(${newAvatarLink})`;
-//     });
-//   };
-//   handleSubmit(makeRequest, evt);
-// };
-
-// cardAddForm.addEventListener('submit', handleAddCardFormSubmit);
-
-// cardAddButton.addEventListener('click', function() {
-//   openPopup(popupAddCard);
-// });
-
-// function handleAddCardFormSubmit(evt) {
-//   function makeRequest() {
-//     return api.updateCard(newPlaceTitle.value, newPlaceImage.value)
-//     .then((newCard) => {
-//       renderCards([newCard]);
-//     });
-//   };
-//   handleSubmit(makeRequest, evt);
-// };
-
-// formEditProfile.addEventListener('submit', handleEditProfileFormSubmit);
-
-// function handleEditProfileFormSubmit(evt) {
-//   function makeRequest() {
-//     return updateUserData(nameInput.value, jobInput.value)
-//     .then((newData) => {
-//       profileName.textContent = newData.name;
-//       profileDescription.textContent = newData.about;
-//     });
-//   };
-//   handleSubmit(makeRequest, evt);
