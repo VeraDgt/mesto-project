@@ -3,7 +3,11 @@ import './index.css';
 import { FormValidator, config } from '../components/FormValidator';
 // import { openPopup, closePopup,clickOnOverlayHandler } from '../components/modal.js';
 import Card from '../components/Card.js';
+<<<<<<< Updated upstream
 import { profileEditButton, profileName, profileDescription, popupEditProfile, nameInput, jobInput, popupAddCard, avatarEditButton, popupEditAvatar, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList } from '../utils/constants.js';
+=======
+import { profileEditButton, avatarEditButton, nameInput, jobInput, profileAvatar, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, newPlaceTitle, newPlaceImage } from '../utils/constants.js';
+>>>>>>> Stashed changes
 import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import PopupWithImage from '../components/PopupWithImage.js';
@@ -168,5 +172,70 @@ export { userId
 const editFormValidator = new FormValidator(config, formEditProfile);
 editFormValidator.enableValidation();
 
+<<<<<<< Updated upstream
 const addFormValidator = new FormValidator(config, cardAddForm);
 addFormValidator.enableValidation();
+=======
+const popupEditAvatar = new PopupWithForm({
+  popupSelector: '#popup_edit-avatar',
+  handleFormSubmit: (userData) => {
+    popupEditAvatar.renderLoading(true);
+    api.updateAvatar(userData.avatar)
+    .then((userData) => {
+      dataUserInfo.editAvatar(userData);
+      popupEditAvatar.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      popupEditAvatar.renderLoading(false);
+    })
+  }
+});
+popupEditAvatar._setEventListeners();
+
+avatarEditButton.addEventListener('click', () => {
+  popupEditAvatar.open();
+});
+
+const popupAddCard = new PopupWithForm({
+  popupSelector: '#popup_add-card',
+  handleFormSubmit: () => {
+    popupAddCard.renderLoading(true);
+    api.updateCard({ 
+      name: newPlaceTitle.value,
+      link: newPlaceImage.value
+    })
+    .then((data) => {
+      cards.addItem(createCard(data));
+      popupAddCard.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      popupAddCard.renderLoading(false);
+    })
+  }
+});
+popupAddCard._setEventListeners();
+
+cardAddButton.addEventListener('click', () => {
+  popupAddCard.open();
+});
+
+const popupConfirmDelete = new PopupWithConfirmation({
+  popupSelector: '#popup_delete-card'
+});
+popupConfirmDelete._setEventListeners();
+
+const editFormValidaton = new FormValidator(config, formEditProfile);
+editFormValidaton.enableValidation();
+
+const addFormValidaton = new FormValidator(config, cardAddForm);
+addFormValidaton.enableValidation();
+
+const changeAvatarValidation = new FormValidator(config, formEditAvatar);
+changeAvatarValidation.enableValidation();
+>>>>>>> Stashed changes

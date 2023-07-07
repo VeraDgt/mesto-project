@@ -121,8 +121,8 @@ export default class Api {
       headers: this._headers,
       method: "POST",
       body: JSON.stringify({
-        name: data.cardName,
-        link: data.cardlink
+        name: data.name,
+        link: data.link
       })
     });
   }
