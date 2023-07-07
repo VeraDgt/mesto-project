@@ -8,17 +8,15 @@ export default class Popup{
 
   open() {
     this._popup.classList.add('popup_opened');
-    document.addEventListener('keydown', this._closeByEsc);
-    document.addEventListener('click', this._clickOnOverlayHandler);
+    this._setEventListeners();
   }
 
   close() {
     this._popup.classList.remove('popup_opened');
-    document.removeEventListener('keydown', this._closeByEsc);
-    document.removeEventListener('click', this._clickOnOverlayHandler);
+    this._removeEventListeners();
   }
 
-  _handleEscClose(evt) {
+    _handleEscClose(evt) {
     if (evt.key === 'Escape') {
       this.close();
     }
@@ -26,14 +24,22 @@ export default class Popup{
 
   _clickOnOverlayHandler(evt) {
     evt.stopImmediatePropagation();
-    if (evt.target.classList.contains('popup_opened')) {
+    if (evt.target.classList.contains('popup_opened') || evt.target.classList.contains('popup__toggle')) {
     this.close();
     }
   }
 
-  setEventListeners() {
-    this._popupCloseButton.addEventListener('click', () => {
+  _clickOnCloseButtonHandler() { 
       this.close();
-    });
+  }
+
+  _setEventListeners() {
+    document.addEventListener('keydown', this._closeByEsc);
+    document.addEventListener('click', this._clickOnOverlayHandler);
+  }
+
+  _removeEventListeners() {
+    document.removeEventListener('keydown', this._closeByEsc);
+    document.removeEventListener('click', this._clickOnOverlayHandler);
   }
 }
