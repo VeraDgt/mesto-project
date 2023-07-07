@@ -80,7 +80,7 @@ const cards = new Section({
 }, '.cards__container');
 
 const popupWithImageItem = new PopupWithImage('#popup_image');
-popupWithImageItem.setEventListeners();
+popupWithImageItem._setEventListeners();
 
 // formEditAvatar.addEventListener('submit', handleEditAvatarFormSubmit);
 
@@ -107,7 +107,7 @@ const popupEditProfile = new PopupWithForm({
     })
   }
 });
-popupEditProfile.setEventListeners();
+popupEditProfile._setEventListeners();
 
 function setEditProfileData({ name, description }) {
   nameInput.value = name;
@@ -140,7 +140,7 @@ const popupEditAvatar = new PopupWithForm({
     })
   }
 });
-popupEditAvatar.setEventListeners();
+popupEditAvatar._setEventListeners();
 
 avatarEditButton.addEventListener('click', () => {
   popupEditAvatar.open();
@@ -163,7 +163,7 @@ const popupAddCard = new PopupWithForm({
     })
   }
 });
-popupAddCard.setEventListeners();
+popupAddCard._setEventListeners();
 
 cardAddButton.addEventListener('click', () => {
   popupAddCard.open();
@@ -234,4 +234,3 @@ changeAvatarValidation.enableValidation();
 //     });
 //   };
 //   handleSubmit(makeRequest, evt);
-// };
