@@ -188,5 +188,69 @@ editFormValidaton.enableValidation();
 const addFormValidaton = new FormValidator(config, cardAddForm);
 addFormValidaton.enableValidation();
 
+
+const addFormValidator = new FormValidator(config, cardAddForm);
+addFormValidator.enableValidation();
+
+const popupEditAvatar = new PopupWithForm({
+  popupSelector: '#popup_edit-avatar',
+  handleFormSubmit: (userData) => {
+    popupEditAvatar.renderLoading(true);
+    api.updateAvatar(userData.avatar)
+    .then((userData) => {
+      dataUserInfo.editAvatar(userData);
+      popupEditAvatar.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      popupEditAvatar.renderLoading(false);
+    })
+  }
+});
+popupEditAvatar._setEventListeners();
+
+avatarEditButton.addEventListener('click', () => {
+  popupEditAvatar.open();
+});
+
+const popupAddCard = new PopupWithForm({
+  popupSelector: '#popup_add-card',
+  handleFormSubmit: () => {
+    popupAddCard.renderLoading(true);
+    api.updateCard({ 
+      name: newPlaceTitle.value,
+      link: newPlaceImage.value
+    })
+    .then((data) => {
+      cards.addItem(createCard(data));
+      popupAddCard.close();
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      popupAddCard.renderLoading(false);
+    })
+  }
+});
+popupAddCard._setEventListeners();
+
+cardAddButton.addEventListener('click', () => {
+  popupAddCard.open();
+});
+
+const popupConfirmDelete = new PopupWithConfirmation({
+  popupSelector: '#popup_delete-card'
+});
+popupConfirmDelete._setEventListeners();
+
+const editFormValidaton = new FormValidator(config, formEditProfile);
+editFormValidaton.enableValidation();
+
+const addFormValidaton = new FormValidator(config, cardAddForm);
+addFormValidaton.enableValidation();
+
 const changeAvatarValidation = new FormValidator(config, formEditAvatar);
 changeAvatarValidation.enableValidation();
