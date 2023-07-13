@@ -22,6 +22,7 @@ const api = new Api({
 
 
 let userId = "";
+let cardToDelete = null;
 
 
 Promise.all([api.getUserData(), api.getInitialCards()])
@@ -43,17 +44,8 @@ const createCard = (data) => {
       popupWithImageItem.open(name, link);
     },
     confirmCardDelete: (cardId) => {
-      popupConfirmDelete.open();
-      popupConfirmDelete.submitCallback(() => {
-        api.deleteCard(cardId)
-        .then(() => {
-          popupConfirmDelete.close();
-          card.deleteCard();
-        })
-        .catch((err) => {
-          console.log(`Ошибка: ${err}`);
-        })
-      })
+      popupConfirmDelete.open(cardId);
+      cardToDelete = card;
     },
 
 
@@ -91,7 +83,6 @@ const cards = new Section({
 
 
 const popupWithImageItem = new PopupWithImage('#popup_image');
-popupWithImageItem.setEventListeners();
 
 
 const dataUserInfo = new UserInfo({
@@ -199,7 +190,20 @@ cardAddButton.addEventListener('click', () => {
 });
 
 const popupConfirmDelete = new PopupWithConfirmation({
-  popupSelector: '#popup_delete-card'
+  popupSelector: '#popup_delete-card',
+  handleFormSubmit: cardId => {
+    api.deleteCard(cardId)
+    .then(() => {
+      cardToDelete.deleteCard();
+      popupConfirmDelete.close();
+    })
+    .then(() => {
+      cardToDelete = null;
+    })
+    .catch((err) => {
+      console.log(`Ошибка: ${err}`);
+    })
+  }
 });
 popupConfirmDelete.setEventListeners();
 
