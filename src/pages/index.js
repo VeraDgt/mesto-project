@@ -157,7 +157,7 @@ popupEditAvatar.setEventListeners();
 
 avatarEditButton.addEventListener('click', () => {
   popupEditAvatar.open();
-  changeAvatarValidation.resetValidation(popupSubmit)
+  changeAvatarValidation.resetValidation()
 });
 
 
@@ -186,7 +186,7 @@ popupAddCard.setEventListeners();
 
 cardAddButton.addEventListener('click', () => {
   popupAddCard.open();
-  addFormValidaton.resetValidation(popupSubmit)
+  addFormValidaton.resetValidation()
 });
 
 const popupConfirmDelete = new PopupWithConfirmation({
