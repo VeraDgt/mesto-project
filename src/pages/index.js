@@ -82,7 +82,6 @@ const cards = new Section({
 
 
 const popupWithImageItem = new PopupWithImage('#popup_image');
-popupWithImageItem._setEventListeners();
 
 
 const dataUserInfo = new UserInfo({
