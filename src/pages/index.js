@@ -91,7 +91,6 @@ const cards = new Section({
 
 
 const popupWithImageItem = new PopupWithImage('#popup_image');
-popupWithImageItem.setEventListeners();
 
 
 const dataUserInfo = new UserInfo({
@@ -126,17 +125,11 @@ const popupEditProfile = new PopupWithForm({
 });
 
 
-function setEditProfileData({ name, description }) {
-  nameInput.value = name;
-  jobInput.value = description;
-}
-
-
 profileEditButton.addEventListener('click', () => {
   const userData = dataUserInfo.getUserInfo();
-  setEditProfileData({
-    name: userData.profileNameInput,
-    description: userData.profileDescriptionInput
+  popupEditProfile.setInputValues({
+    name: userData.nameInput,
+    description: userData.jobInput
   });
   popupEditProfile.open();
 });
@@ -150,7 +143,6 @@ const popupEditAvatar = new PopupWithForm({
     .then((userData) => {
       dataUserInfo.editAvatar(userData);
       popupEditAvatar.close()
-      debugger
     })
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
