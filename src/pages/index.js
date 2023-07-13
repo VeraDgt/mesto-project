@@ -22,7 +22,6 @@ const api = new Api({
 
 
 let userId = "";
-let cardToDelete = null;
 
 
 Promise.all([api.getUserData(), api.getInitialCards()])
@@ -44,8 +43,17 @@ const createCard = (data) => {
       popupWithImageItem.open(name, link);
     },
     confirmCardDelete: (cardId) => {
-      popupConfirmDelete.open(cardId);
-      cardToDelete = card;
+      popupConfirmDelete.open();
+      popupConfirmDelete.submitCallback(() => {
+        api.deleteCard(cardId)
+        .then(() => {
+          popupConfirmDelete.close();
+          card.deleteCard();
+        })
+        .catch((err) => {
+          console.log(`Ошибка: ${err}`);
+        })
+      })
     },
 
 
@@ -83,6 +91,7 @@ const cards = new Section({
 
 
 const popupWithImageItem = new PopupWithImage('#popup_image');
+popupWithImageItem.setEventListeners();
 
 
 const dataUserInfo = new UserInfo({
@@ -121,15 +130,14 @@ popupEditProfile.setEventListeners();
 function setEditProfileData({ name, description }) {
   nameInput.value = name;
   jobInput.value = description;
-  editFormValidaton.resetValidation()
 }
 
 
 profileEditButton.addEventListener('click', () => {
   const userData = dataUserInfo.getUserInfo();
   setEditProfileData({
-    name: userData.nameInput,
-    description: userData.jobInput
+    name: userData.profileNameInput,
+    description: userData.profileDescriptionInput
   });
   popupEditProfile.open();
 });
@@ -143,6 +151,7 @@ const popupEditAvatar = new PopupWithForm({
     .then((userData) => {
       dataUserInfo.editAvatar(userData);
       popupEditAvatar.close()
+      debugger
     })
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
@@ -190,20 +199,7 @@ cardAddButton.addEventListener('click', () => {
 });
 
 const popupConfirmDelete = new PopupWithConfirmation({
-  popupSelector: '#popup_delete-card',
-  handleFormSubmit: cardId => {
-    api.deleteCard(cardId)
-    .then(() => {
-      cardToDelete.deleteCard();
-      popupConfirmDelete.close();
-    })
-    .then(() => {
-      cardToDelete = null;
-    })
-    .catch((err) => {
-      console.log(`Ошибка: ${err}`);
-    })
-  }
+  popupSelector: '#popup_delete-card'
 });
 popupConfirmDelete.setEventListeners();
 
