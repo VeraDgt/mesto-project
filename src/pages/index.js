@@ -124,7 +124,6 @@ const popupEditProfile = new PopupWithForm({
     })
   }
 });
-popupEditProfile.setEventListeners();
 
 
 function setEditProfileData({ name, description }) {
@@ -161,7 +160,6 @@ const popupEditAvatar = new PopupWithForm({
     })
   }
 });
-popupEditAvatar.setEventListeners();
 
 
 avatarEditButton.addEventListener('click', () => {
@@ -190,7 +188,6 @@ const popupAddCard = new PopupWithForm({
     })
   }
 });
-popupAddCard.setEventListeners();
 
 
 cardAddButton.addEventListener('click', () => {
@@ -201,7 +198,6 @@ cardAddButton.addEventListener('click', () => {
 const popupConfirmDelete = new PopupWithConfirmation({
   popupSelector: '#popup_delete-card'
 });
-popupConfirmDelete.setEventListeners();
 
 
 const editFormValidaton = new FormValidator(config, formEditProfile);
