@@ -28,6 +28,7 @@ Promise.all([api.getUserData(), api.getInitialCards()])
 .then(([userData, initialCards]) => {
   userId = userData._id;
   dataUserInfo.setUserInfo(userData);
+  dataUserInfo.editAvatar(userData);
   cards.renderItems(initialCards);
 })
 .catch(err => console.log(`Ошибка: ${err}`));
@@ -90,7 +91,7 @@ const cards = new Section({
 
 
 const popupWithImageItem = new PopupWithImage('#popup_image');
-popupWithImageItem._setEventListeners();
+popupWithImageItem.setEventListeners();
 
 
 const dataUserInfo = new UserInfo({
@@ -123,7 +124,7 @@ const popupEditProfile = new PopupWithForm({
     })
   }
 });
-popupEditProfile._setEventListeners();
+popupEditProfile.setEventListeners();
 
 
 function setEditProfileData({ name, description }) {
@@ -149,7 +150,8 @@ const popupEditAvatar = new PopupWithForm({
     api.updateAvatar(userData.avatar)
     .then((userData) => {
       dataUserInfo.editAvatar(userData);
-      popupEditAvatar.close();
+      popupEditAvatar.close()
+      debugger
     })
     .catch((err) => {
       console.log(`Ошибка: ${err}`);
@@ -159,11 +161,12 @@ const popupEditAvatar = new PopupWithForm({
     })
   }
 });
-popupEditAvatar._setEventListeners();
+popupEditAvatar.setEventListeners();
 
 
 avatarEditButton.addEventListener('click', () => {
   popupEditAvatar.open();
+  changeAvatarValidation.resetValidation(popupSubmit)
 });
 
 
@@ -187,18 +190,18 @@ const popupAddCard = new PopupWithForm({
     })
   }
 });
-popupAddCard._setEventListeners();
+popupAddCard.setEventListeners();
 
 
 cardAddButton.addEventListener('click', () => {
   popupAddCard.open();
+  addFormValidaton.resetValidation(popupSubmit)
 });
-
 
 const popupConfirmDelete = new PopupWithConfirmation({
   popupSelector: '#popup_delete-card'
 });
-popupConfirmDelete._setEventListeners();
+popupConfirmDelete.setEventListeners();
 
 
 const editFormValidaton = new FormValidator(config, formEditProfile);
@@ -211,3 +214,4 @@ addFormValidaton.enableValidation();
 
 const changeAvatarValidation = new FormValidator(config, formEditAvatar);
 changeAvatarValidation.enableValidation();
+
