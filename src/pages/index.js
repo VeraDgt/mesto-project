@@ -3,7 +3,7 @@ import './index.css';
 
 import { FormValidator, config } from '../components/FormValidator';
 import Card from '../components/Card.js';
-import { profileEditButton, avatarEditButton, popupSubmit, nameInput, jobInput, profileAvatar, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, newPlaceTitle, newPlaceImage } from '../utils/constants.js';
+import { profileEditButton, avatarEditButton, nameInput, jobInput, profileAvatar, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, newPlaceTitle, newPlaceImage } from '../utils/constants.js';
 import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import PopupWithImage from '../components/PopupWithImage.js';
@@ -166,7 +166,7 @@ popupEditAvatar.setEventListeners();
 
 avatarEditButton.addEventListener('click', () => {
   popupEditAvatar.open();
-  changeAvatarValidation.resetValidation(popupSubmit)
+  changeAvatarValidation.resetValidation()
 });
 
 
@@ -195,7 +195,7 @@ popupAddCard.setEventListeners();
 
 cardAddButton.addEventListener('click', () => {
   popupAddCard.open();
-  addFormValidaton.resetValidation(popupSubmit)
+  addFormValidaton.resetValidation()
 });
 
 const popupConfirmDelete = new PopupWithConfirmation({
