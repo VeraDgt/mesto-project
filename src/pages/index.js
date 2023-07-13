@@ -118,16 +118,9 @@ const popupEditProfile = new PopupWithForm({
 popupEditProfile.setEventListeners();
 
 
-function setEditProfileData({ name, description }) {
-  nameInput.value = name;
-  jobInput.value = description;
-  editFormValidaton.resetValidation()
-}
-
-
 profileEditButton.addEventListener('click', () => {
   const userData = dataUserInfo.getUserInfo();
-  setEditProfileData({
+  popupEditProfile.setInputValues({
     name: userData.nameInput,
     description: userData.jobInput
   });
