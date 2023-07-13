@@ -60,5 +60,6 @@ const popupList = Array.from(document.querySelectorAll('.popup'));
 const popupDeleteCard = document.querySelector('#popup_delete-card');
 const formDeleteCard = document.forms.delete;
 
+
 export { initialCards, popupImage, cardsContainer, cardTemplate, popupImageImg, popupImageCaption, profileEditButton, profileName, profileDescription, popupEditProfile, nameInput, jobInput, buttonsClosePopups, popupAddCard, avatarEditButton, popupEditAvatar, newAvatar, profileAvatar, newPlaceTitle, newPlaceImage, formEditAvatar, cardAddForm, cardAddButton, formEditProfile, popupList, popupDeleteCard, formDeleteCard };
 
